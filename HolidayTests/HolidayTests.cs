@@ -22,8 +22,15 @@ namespace HolidayTests
         [Test]
         public void today_is_xmas()
         {
-            GivenToday(12, 25); 
+            GivenToday(12, 25);
             ResponseShouldBe("Merry Xmas");
+        }
+
+        [Test]
+        public void today_is_not_xmas()
+        {
+            GivenToday(11, 25);
+            ResponseShouldBe("Today is not Xmas");
         }
 
         private void ResponseShouldBe(string expected)
