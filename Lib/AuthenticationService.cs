@@ -11,17 +11,20 @@ namespace Lib
     {
         private readonly IProfile _profile;
         private readonly IToken _token;
+        private readonly ILogger _log;
 
-        public AuthenticationService()
+        public AuthenticationService(ILogger log)
         {
+            _log = log;
             _profile = new ProfileDao();
             _token = new RsaTokenDao();
         }
 
-        public AuthenticationService(IProfile profile, IToken token)
+        public AuthenticationService(IProfile profile, IToken token, ILogger log)
         {
             _profile = profile;
             _token = token;
+            _log = log;
         }
 
         public bool IsValid(string account, string password)
@@ -42,9 +45,15 @@ namespace Lib
             }
             else
             {
+                _log.Info($"account:{account} try to login failed");
                 return false;
             }
         }
+    }
+
+    public interface ILogger
+    {
+        void Info(string message);
     }
 
     public interface IProfile
