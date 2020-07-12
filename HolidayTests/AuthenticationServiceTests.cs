@@ -45,12 +45,22 @@ namespace HolidayTests
         [Test]
         public void should_log_account_when_invalid()
         {
+            WhenInvalid("joey");
+            ShouldLog("joey", "login failed");
+        }
+
+        private void ShouldLog(string account, string status)
+        {
+            _logger.Received(1)
+                   .Info(Arg.Is<string>(m => m.Contains(account) && m.Contains(status)));
+            // .Info("account:joey try to login failed");
+        }
+
+        private void WhenInvalid(string account)
+        {
             GivenPassword("joey", "91");
             GivenToken("000000");
-            _target.IsValid("joey", "wrong password");
-            _logger.Received(1)
-                   .Info(Arg.Is<string>(m=>m.Contains("joey") && m.Contains("login failed")));
-                   // .Info("account:joey try to login failed");
+            _target.IsValid(account, "wrong password");
         }
 
         private void ShouldBeInvalid(string account, string password)
