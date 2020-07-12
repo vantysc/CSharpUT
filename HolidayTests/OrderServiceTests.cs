@@ -3,6 +3,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Lib;
+using Moq;
+using Moq.Protected;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -13,15 +15,20 @@ namespace HolidayTests
     [TestFixture]
     public class OrderServiceTests
     {
-        private IBookDao _bookDao;
-        private OrderServiceForTest _target;
+        private Mock<IBookDao> _bookDao;
+        private Mock<OrderService> _target;
 
         [SetUp]
         public void SetUp()
         {
-            _target = new OrderServiceForTest();
-            _bookDao = Substitute.For<IBookDao>();
-            _target.BookDao = _bookDao;
+            // _target = new OrderServiceForTest();
+            // _bookDao = Substitute.For<IBookDao>();
+            // _target.BookDao = _bookDao;
+            _target = new Mock<OrderService>();
+            _bookDao = new Mock<IBookDao>();
+            _target.Protected()
+                   .Setup<IBookDao>("GetBookDao")
+                   .Returns(_bookDao.Object);
         }
 
         [Test]
@@ -40,24 +47,35 @@ namespace HolidayTests
 
         private void ShouldNotInsertOrder(string orderType)
         {
-            _bookDao.DidNotReceive()
-                    .Insert(Arg.Is<Order>(order => order.Type == orderType));
+            // _bookDao.DidNotReceive()
+            //         .Insert(Arg.Is<Order>(order => order.Type == orderType)); 
+            
+            _bookDao
+                .Verify(x =>
+                            x.Insert(It.Is<Order>(order => order.Type=="CD")), Times.Exactly(0));
         }
 
         private void ShouldInsertOrder(int times, string orderType)
         {
-            _bookDao.Received(times)
-                    .Insert(Arg.Is<Order>(order => order.Type == orderType));
+            // _bookDao.Received(times)
+            //         .Insert(Arg.Is<Order>(order => order.Type == orderType));
+            _bookDao
+                .Verify(x =>
+                            x.Insert(It.Is<Order>(order => order.Type=="Book")), Times.Exactly(2));
         }
 
         private void WhenSyncBookOrders()
         {
-            _target.SyncBookOrders();
+            _target.Object.SyncBookOrders();
         }
 
         private void GivenOrders(params Order[] orders)
         {
-            _target.Orders = orders.ToList();
+            // _target.Orders = orders.ToList();
+            _target.Protected()
+                   .Setup<List<Order>>("GetOrders")
+                   .Returns(orders.ToList);
+
         }
     }
 
