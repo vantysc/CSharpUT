@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace HolidayTests
 {
     [TestFixture]
-    public class Tests
+    public class HolidayTest
     {
         [Test]
         public void Test1()
