@@ -58,6 +58,7 @@
     <ItemGroup>
         <Compile Include="AuthenticationServiceTests.cs" />
         <Compile Include="HolidayTests.cs" />
+        <Compile Include="OrderServiceTests.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>
     <ItemGroup>
