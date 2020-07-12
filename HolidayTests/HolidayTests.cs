@@ -10,8 +10,25 @@ namespace HolidayTests
         [Test]
         public void today_is_xmas()
         {
-            var holiday = new Holiday();
+            var holiday = new HolidayForTest();
+            holiday.Today = new DateTime(2020, 12, 25);
+
             Assert.AreEqual("Merry Xmas", holiday.SayHello());
+        }
+    }
+
+    public class HolidayForTest : Holiday
+    {
+        private DateTime _today;
+
+        public DateTime Today
+        {
+            set => _today = value;
+        }
+
+        protected override DateTime GetToday()
+        {
+            return _today;
         }
     }
 }
