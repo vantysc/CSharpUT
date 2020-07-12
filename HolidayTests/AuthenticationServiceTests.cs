@@ -1,28 +1,50 @@
-﻿using Lib;
+﻿#region
+
+using Lib;
 using NSubstitute;
 using NUnit.Framework;
+
+#endregion
 
 namespace HolidayTests
 {
     [TestFixture]
     public class AuthenticationServiceTests
     {
-        [Test()]
+        private IProfile _profile;
+        private AuthenticationService _target;
+        private IToken _token;
+
+        [SetUp]
+        public void SetUp()
+        {
+            _profile = Substitute.For<IProfile>();
+            _token = Substitute.For<IToken>();
+            _target = new AuthenticationService(_profile, _token);
+        }
+
+        [Test]
         public void is_valid()
         {
-            var profile = Substitute.For<IProfile>();
-            profile.GetPassword("joey").Returns("91");
+            GivenPassword("joey", "91");
+            GivenToken("000000"); 
+            ShouldBeValid("joey", "91000000");
+        }
 
-            var token = Substitute.For<IToken>(); 
-            token.GetRandom("").ReturnsForAnyArgs("000000");
-
-            var target = new AuthenticationService(profile, token);
-            // var target = new AuthenticationService(new FakeProfile(), new FakeToken());
-
-            var actual = target.IsValid("joey", "91000000");
-
-            //always failed
+        private void ShouldBeValid(string account, string password)
+        {
+            var actual = _target.IsValid(account, password);
             Assert.IsTrue(actual);
+        }
+
+        private void GivenToken(string token)
+        {
+            _token.GetRandom("").ReturnsForAnyArgs(token);
+        }
+
+        private void GivenPassword(string account, string password)
+        {
+            _profile.GetPassword(account).Returns(password);
         }
     }
 
