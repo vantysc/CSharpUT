@@ -7,7 +7,7 @@ namespace Lib
         public string SayHello()
         {
             var today = GetToday();
-            if (today.Month == 12 && today.Day == 25)
+            if (today.Month == 12 && (today.Day == 25 || today.Day == 24))
             {
                 return "Merry Xmas";
             }

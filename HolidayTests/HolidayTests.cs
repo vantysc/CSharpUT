@@ -27,6 +27,13 @@ namespace HolidayTests
         }
 
         [Test]
+        public void today_is_xmas_when_12_24()
+        {
+            GivenToday(12, 24);
+            ResponseShouldBe("Merry Xmas");
+        }
+
+        [Test]
         public void today_is_not_xmas()
         {
             GivenToday(11, 25);
